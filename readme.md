@@ -7,12 +7,17 @@ A lightweight CMS built with **Express.js** and **Tailwind CSS**, allowing users
 ## 🚀 Features
 
 * 📄 **File Operations**: Create, read, append, rename, copy, and delete `.txt` files.
-* 🌗 **Theme Toggle**: Light/Dark mode switcher using `localStorage` for persistence.
 * 📱 **Responsive Design**: Built with Tailwind CSS, optimized for mobile and desktop.
 * 📁 **Local File Storage**: All files are saved inside the `content/` directory.
 * 🎨 **Animated Background**: Starry animated canvas background adds a visual touch.
 * 💻 **Server-Side Logic**: All backend file handling is managed through `server.js` using Express.js.
 * 📜 **File System Module**: Utilizes Node.js `fs` and `fs/promises` modules for asynchronous file operations.
+
+### 📸 Screenshots
+
+![Content Management System Screenshot 1](https://github.com/PranavHendre02/Content-Management-System/blob/25809fd0e526c9a536861ca9f6549a7cf906a9ac/src/content1.jpg?raw=true)
+
+![Content Management System Screenshot 2](https://github.com/PranavHendre02/Content-Management-System/blob/25809fd0e526c9a536861ca9f6549a7cf906a9ac/src/content2.jpg?raw=true)
 
 ---
 
