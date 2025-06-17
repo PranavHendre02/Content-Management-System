@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📁 Content Management System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+        }
+    </script>
+    <style>
+        canvas#space-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -10;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 dark:bg-gray-950 text-gray-900 dark:text-gray-100 min-h-screen font-sans transition-colors duration-300">
+    <canvas id="space-bg"></canvas>
+    <nav class="fixed top-0 left-0 w-full bg-white/80 dark:bg-gray-900/80 backdrop-blur-md shadow-md z-10">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
+            <h1 class="text-2xl font-bold text-blue-600 dark:text-blue-400"> Content Management System</h1>
+            <button id="theme-toggle"
+                class="p-2 rounded-full bg-blue-600 hover:bg-blue-700 text-white flex items-center gap-2 transition-colors duration-200">
+                <span id="theme-icon">🌙</span>
+                <span class="hidden sm:inline">Toggle Theme</span>
+            </button>
+        </div>
+    </nav>
+    <div class="container mx-auto pt-20 pb-8 px-4 sm:px-6 lg:px-8 max-w-5xl">
+        <div class="mb-8 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm p-6 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300">
+            <h2 class="text-2xl font-semibold mb-4 text-blue-600 dark:text-blue-400">Files</h2>
+            <ul id="fileList" class="list-none space-y-2"></ul>
+            <div id="fileContent" class="mt-4 p-4 bg-gray-200/50 dark:bg-gray-800/50 rounded-lg hidden">
+                <h3 class="text-lg font-semibold text-blue-600 dark:text-blue-400"></h3>
+                <pre class="whitespace-pre-wrap text-gray-700 dark:text-gray-300"></pre>
+            </div>
+        </div>
+        <div class="mb-8 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm p-6 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300">
+            <h2 class="text-2xl font-semibold mb-4 text-blue-600 dark:text-blue-400">Create File</h2>
+            <div class="flex flex-col gap-4">
+                <input id="createFilename" type="text" placeholder="Filename (without .txt)"
+                    class="p-3 bg-gray-200 dark:bg-gray-800 text-gray-900 dark:text-gray-100 border border-gray-300 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600">
+                <textarea id="createContent" placeholder="Content" rows="4"
+                    class="p-3 bg-gray-200 dark:bg-gray-800 text-gray-900 dark:text-gray-100 border border-gray-300 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"></textarea>
+                <button onclick="createFile()"
+                    class="bg-blue-600 text-white p-3 rounded-lg hover:bg-blue-700 transition-colors duration-200">Create</button>
+            </div>
+        </div>
+        <div class="mb-8 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm p-6 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300">
+            <h2 class="text-2xl font-semibold mb-4 text-blue-600 dark:text-blue-400">Append to File</h2>
+            <div class="flex flex-col gap-4">
+                <input id="appendFilename" type="text" placeholder="Filename (without .txt)"
+                    class="p-3 bg-gray-200 dark:bg-gray-800 text-gray-900 dark:text-gray-100 border border-gray-300 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600">
+                <textarea id="appendContent" placeholder="Content to append" rows="4"
+                    class="p-3 bg-gray-200 dark:bg-gray-800 text-gray-900 dark:text-gray-100 border border-gray-300 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"></textarea>
+                <button onclick="appendFile()"
+                    class="bg-blue-600 text-white p-3 rounded-lg hover:bg-blue-700 transition-colors duration-200">Append</button>
+            </div>
+        </div>
+        <div class="mb-8 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm p-6 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300">
+            <h2 class="text-2xl font-semibold mb-4 text-blue-600 dark:text-blue-400">Rename File</h2>
+            <div class="flex flex-col gap-4 sm:flex-row sm:gap-2">
+                <input id="oldName" type="text" placeholder="Current filename (without .txt)"
+                    class="p-3 bg-gray-200 dark:bg-gray-800 text-gray-900 dark:text-gray-100 border border-gray-300 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 sm:flex-1">
+                <input id="newName" type="text" placeholder="New filename (without .txt)"
+                    class="p-3 bg-gray-200 dark:bg-gray-800 text-gray-900 dark:text-gray-100 border border-gray-300 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 sm:flex-1">
+                <button onclick="renameFile()"
+                    class="bg-blue-600 text-white p-3 rounded-lg hover:bg-blue-700 transition-colors duration-200 sm:w-auto">Rename</button>
+            </div>
+        </div>
+        <div class="mb-8 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm p-6 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300">
+            <h2 class="text-2xl font-semibold mb-4 text-blue-600 dark:text-blue-400">Copy File</h2>
+            <div class="flex flex-col gap-4 sm:flex-row sm:gap-2">
+                <input id="originalName" type="text" placeholder="Original filename (without .txt)"
+                    class="p-3 bg-gray-200 dark:bg-gray-800 text-gray-900 dark:text-gray-100 border border-gray-300 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 sm:flex-1">
+                <input id="copyName" type="text" placeholder="Copy filename (without .txt)"
+                    class="p-3 bg-gray-200 dark:bg-gray-800 text-gray-900 dark:text-gray-100 border border-gray-300 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 sm:flex-1">
+                <button onclick="copyFile()"
+                    class="bg-blue-600 text-white p-3 rounded-lg hover:bg-blue-700 transition-colors duration-200 sm:w-auto">Copy</button>
+            </div>
+        </div>
+        <div class="mb-8 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm p-6 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300">
+            <h2 class="text-2xl font-semibold mb-4 text-blue-600 dark:text-blue-400">Delete File</h2>
+            <div class="flex flex-col gap-4 sm:flex-row sm:gap-2">
+                <input id="deleteFilename" type="text" placeholder="Filename (without .txt)"
+                    class="p-3 bg-gray-200 dark:bg-gray-800 text-gray-900 dark:text-gray-100 border border-gray-300 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 sm:flex-1">
+                <button onclick="deleteFile()"
+                    class="bg-blue-600 text-white p-3 rounded-lg hover:bg-blue-700 transition-colors duration-200 sm:w-auto">Delete</button>
+            </div>
+        </div>
+
+        <div id="message" class="mt-4 text-center text-blue-600 dark:text-blue-400 font-medium"></div>
+    </div>
+    <script>
+        const canvas = document.getElementById('space-bg');
+        const ctx = canvas.getContext('2d');
+        let stars = [];
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+
+        function initStars() {
+            stars = [];
+            for (let i = 0; i < 100; i++) {
+                stars.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    radius: Math.random() * 1.5,
+                    speed: Math.random() * 0.5 + 0.2
+                });
+            }
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+            stars.forEach(star => {
+                ctx.beginPath();
+                ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
+                ctx.fill();
+                star.y += star.speed;
+                if (star.y > canvas.height) star.y = 0;
+            });
+            requestAnimationFrame(animate);
+        }
+
+        window.addEventListener('resize', () => {
+            resizeCanvas();
+            initStars();
+        });
+        resizeCanvas();
+        initStars();
+        animate();
+    </script>
+
+    <!-- Theme Toggle -->
+    <script>
+        const html = document.documentElement;
+        const themeToggle = document.getElementById('theme-toggle');
+        const themeIcon = document.getElementById('theme-icon');
+
+
+        let currentTheme = 'dark';
+
+        function updateTheme() {
+            if (currentTheme === 'dark') {
+                html.classList.add('dark');
+                themeIcon.textContent = '☀️';
+            } else {
+                html.classList.remove('dark');
+                themeIcon.textContent = '🌙';
+            }
+        }
+
+        // Initialize theme
+        updateTheme();
+
+        // Toggle theme on click
+        themeToggle.addEventListener('click', () => {
+            currentTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            updateTheme();
+        });
+    </script>
+
+    <script src="script.js"></script>
+</body>
+</html>
