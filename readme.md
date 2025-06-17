@@ -47,13 +47,6 @@ npm start
 
 ---
 
-## 🌐 Deployment
-
-📌 **Deployed on Netlify**
-Note: Only the frontend is hosted on Netlify. The backend (`server.js`) runs separately as it requires a Node.js server environment.
-
----
-
 ## 📁 File Storage Details
 
 * **Local Environment**: Files are saved in `/content/` folder.
